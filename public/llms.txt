@@ -1,0 +1,35 @@
+# Mellea
+
+> A composable, multi-agent framework for building reliable, predictable AI agents at production scale.
+
+Mellea is an open-source Python library from IBM Research that brings software engineering rigour to generative AI. Rather than treating LLMs as human-like entities to be prompted, Mellea treats them as computational engines — composable, testable, and verifiable.
+
+## Core ideas
+
+- **Generative Functions**: Python functions whose implementation is provided by an LLM, with typed inputs and outputs
+- **Constrained Decoding**: Guaranteed structured output — the model cannot produce invalid responses
+- **MObjects (Mellea Objects)**: Typed data structures that flow through generative pipelines
+- **Requirements-Driven**: Instruct, validate, and repair — define what correct output looks like, not just what to ask
+- **Unit Testable**: Generative code can be unit tested like any other Python code
+- **OpenTelemetry Native**: Full observability with traces, metrics, and logs using Gen-AI semantic conventions
+
+## Why it exists
+
+Current agent frameworks push developers toward fragile prompt engineering and anthropomorphic agent designs. Mellea provides a programming model where LLMs are woven into traditional software seamlessly — making AI agents as predictable and maintainable as the rest of your codebase.
+
+## Key capabilities
+
+- Any LLM provider (via LiteLLM, direct APIs, or local models including watsonx)
+- Safety and guardrails (Granite Guardian, jailbreak prevention, hallucination detection)
+- Async and streaming support
+- Multimodal / vision model support
+- REST API deployment via m_serve
+- SoFAI: fast/slow two-tier model sampling for cost optimisation
+- RAG pipeline support
+
+## Links
+
+- Docs: https://docs.mellea.ai
+- GitHub: https://github.com/generative-computing/mellea
+- Blog: https://mellea.ai/blogs
+- PyPI: https://pypi.org/project/mellea/

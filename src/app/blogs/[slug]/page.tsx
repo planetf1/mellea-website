@@ -1,9 +1,36 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeSlug from 'rehype-slug';
 import { getBlog, getAllBlogSlugs } from '@/lib/blogs';
+import { siteConfig } from '@/config/site';
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const blog = getBlog(slug);
+  if (!blog) return {};
+  return {
+    title: blog.title,
+    description: blog.excerpt,
+    openGraph: {
+      type: 'article',
+      title: blog.title,
+      description: blog.excerpt,
+      url: `${siteConfig.url}/blogs/${slug}`,
+      siteName: siteConfig.name,
+      publishedTime: blog.date,
+      authors: [blog.author],
+      ...(blog.coverImage ? { images: [{ url: blog.coverImage }] } : {}),
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: blog.title,
+      description: blog.excerpt,
+    },
+  };
+}
 
 function formatDate(dateStr: string) {
   if (!dateStr) return '';
