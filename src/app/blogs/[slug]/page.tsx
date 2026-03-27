@@ -81,6 +81,17 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
             {blog.content}
           </ReactMarkdown>
         </div>
+
+        <footer className="blog-post-footer">
+          <Link
+            href={siteConfig.discussionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="blog-discuss-link"
+          >
+            Discuss this post on GitHub →
+          </Link>
+        </footer>
       </article>
     </div>
   );

@@ -32,6 +32,14 @@ export default function Header() {
             Blog
           </Link>
           <Link
+            href={siteConfig.discussionsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-link"
+          >
+            Community
+          </Link>
+          <Link
             href={siteConfig.githubUrl}
             target="_blank"
             rel="noopener noreferrer"

@@ -724,6 +724,24 @@ a {
   color: var(--accent-blue);
 }
 
+.blog-post-footer {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--border);
+}
+
+.blog-discuss-link {
+  display: inline-block;
+  color: var(--accent-blue);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.blog-discuss-link:hover {
+  text-decoration: underline;
+}
+
 /* ── Stats / Feature strip ── */
 .feature-strip {
   display: grid;
