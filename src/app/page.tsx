@@ -125,7 +125,7 @@ export default function HomePage() {
                 <path d="M9 17h6" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round"/>
               </svg>
               <h3 className="feature-card-title">Requirements Driven</h3>
-              <p className="feature-card-body">Define rules for any LLM call. Mellea validates outputs against them and retries automatically — bad output never reaches your users.</p>
+              <p className="feature-card-body">Declare rules — tone, length, content, custom logic — and Mellea validates every output before it leaves. Automatic retries mean bad output never reaches your users.</p>
               <Link href="https://docs.mellea.ai/concepts/requirements-system" target="_blank" className="feature-card-link">Learn more →</Link>
             </div>
             <div className="feature-card">
@@ -135,7 +135,7 @@ export default function HomePage() {
                 <path d="M9 12l2 2 4-4" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
               <h3 className="feature-card-title">Predictable and Resilient</h3>
-              <p className="feature-card-body">Pluggable sampling strategies — rejection sampling, majority voting, inference-time scaling. One parameter change. No rewrites.</p>
+              <p className="feature-card-body">Need higher confidence? Switch from single-shot to majority voting or best-of-n with one parameter. No code rewrites, no new infrastructure.</p>
               <Link href="https://docs.mellea.ai/advanced/inference-time-scaling" target="_blank" className="feature-card-link">Learn more →</Link>
             </div>
             <div className="feature-card">
