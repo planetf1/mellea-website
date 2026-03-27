@@ -30,7 +30,7 @@ export default function HomePage() {
               <p className="hero-subtitle">
                 Inside every AI-powered pipeline, workflow, or script, the unreliable part is the same:
                 the LLM call itself. Silent failures, untestable outputs.
-                Mellea based Python code allows you to test, and reason about using type-annotated outputs, verifiable requirements, and automatic retries.
+                Mellea lets you test and reason about every LLM call using type-annotated outputs, verifiable requirements, and automatic retries.
               </p>
 
               <InstallCommand />

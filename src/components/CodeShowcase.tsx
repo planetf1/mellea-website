@@ -16,7 +16,7 @@ const ITEMS = [
     learnMore: 'https://docs.mellea.ai/concepts/generative-functions',
     code: `from typing import Literal
 from pydantic import BaseModel
-from mellea import generative
+from mellea import generative, start_session
 
 class ReviewAnalysis(BaseModel):
     sentiment: Literal["positive", "negative", "neutral"]
@@ -28,6 +28,7 @@ def analyze_review(text: str) -> ReviewAnalysis:
     """Extract sentiment, a 1-5 score, and a one-sentence summary."""
     ...
 
+m = start_session()
 result = analyze_review(m, text="Battery life is great but the screen is dim")
 
 print(result.sentiment)  # "positive", "negative", or "neutral" — always

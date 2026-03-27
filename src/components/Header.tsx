@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { siteConfig } from '@/config/site';
 
 export default function Header() {
   const pathname = usePathname();
@@ -23,13 +24,21 @@ export default function Header() {
             Home
           </Link>
           <Link
+            href={siteConfig.docsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-link"
+          >
+            Docs
+          </Link>
+          <Link
             href="/blogs"
             className={`nav-link ${pathname.startsWith('/blogs') ? 'active' : ''}`}
           >
-            Blogs
+            Blog
           </Link>
           <Link
-            href="https://github.com/generative-computing/mellea"
+            href={siteConfig.githubUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="nav-link"
@@ -37,7 +46,7 @@ export default function Header() {
             GitHub
           </Link>
           <Link
-            href="https://github.com/generative-computing/mellea"
+            href={siteConfig.docsUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="nav-cta"
