@@ -1,6 +1,6 @@
 ---
 title: "Getting Structured Data Out of Images with Granite Vision 4.1"
-date: "2026-06-03"
+date: "2026-07-28"
 author: "Nigel Jones"
 excerpt: "Vision models return prose. This post shows how to get a typed Python object back instead, using Mellea's format= parameter and ImageBlock."
 tags: ["vision", "structured-output", "granite", "IVR", "image-extraction"]
@@ -17,47 +17,13 @@ There's a cleaner path.
 
 ---
 
-> **EDITORIAL NOTE — remove before publishing**
->
-> **Status:** All four code blocks verified working (2026-06-15) via llama-server (homebrew
-> llama.cpp build 9630) with a locally quantized/converted Q4_K_M GGUF from the HF
-> safetensors weights. Awaiting two Ollama fixes before publishing:
->
-> 1. `granite4_vision` projector support — not present in Ollama 0.30.8 (bundled llama.cpp
->    b9509); requires Ollama to ship llama.cpp ≥9630.
-> 2. Model published in the Ollama library — `ollama pull granite-vision-4.1` currently 404s;
->    `ollama pull huggingface.com/ibm-granite/granite-vision-4.1-4b` also blocked by (1).
->
-> **Model availability:** This blog is written for Ollama (final published form — don't change
-> the code examples). For testing and review, run the code against mlx-vlm instead:
->
-> ```bash
-> mkdir granite-vision-test && cd granite-vision-test
-> uv init --bare --python 3.12
-> uv add mlx-vlm mellea pillow
-> uv run python -m mlx_vlm.server --model ibm-granite/granite-vision-4.1-4b
-> # Serves at http://localhost:8080/v1 — model downloads (~8 GB) on first run.
-> # This is the full bfloat16 safetensors weights, not a quantized GGUF —
-> # expect roughly double the size you'd see from an Ollama pull.
-> ```
->
-> Then change the session setup in each code block from:
-> `m = start_session(model_id="granite-vision-4.1")`
-> to:
-> `m = MelleaSession(OpenAIBackend("ibm-granite/granite-vision-4.1-4b", base_url="http://localhost:8080/v1", api_key="mlx"))`
->
-> Once granite-vision-4.1 is available in Ollama, remove the mlx-vlm instructions above and
-> verify `ollama pull huggingface.com/ibm-granite/granite-vision-4.1-4b` or `ollama pull granite-vision-4.1` works, then publish.
-
----
-
 ## Running locally
 
 [Granite Vision 4.1](https://huggingface.co/ibm-granite/granite-vision-4.1-4b) runs locally
 on Ollama. No API key, no cloud bill:
 
 ```bash
-ollama pull granite-vision-4.1
+ollama pull hf.co/ibm-granite/granite-vision-4.1-4b-GGUF:Q4_K_M
 uv add mellea pillow
 ```
 
@@ -75,7 +41,7 @@ from mellea import start_session
 from mellea.core import ImageBlock
 from PIL import Image
 
-m = start_session(model_id="granite-vision-4.1")
+m = start_session(model_id="hf.co/ibm-granite/granite-vision-4.1-4b-GGUF:Q4_K_M")
 img = ImageBlock.from_pil_image(Image.open("receipt.jpg"))
 
 result = m.instruct("What's on this receipt?", images=[img])
@@ -106,6 +72,7 @@ errors to catch.
 from pydantic import BaseModel
 from mellea import start_session
 from mellea.core import ImageBlock
+from mellea.backends.model_options import ModelOption
 from PIL import Image
 
 
@@ -124,7 +91,10 @@ class Receipt(BaseModel):
     total: float
 
 
-m = start_session(model_id="granite-vision-4.1")
+m = start_session(
+    model_id="hf.co/ibm-granite/granite-vision-4.1-4b-GGUF:Q4_K_M",
+    model_options={ModelOption.CONTEXT_WINDOW: 4096},
+)
 img = ImageBlock.from_pil_image(Image.open("receipt.jpg"))
 
 result = m.instruct("Extract the receipt data.", images=[img], format=Receipt)
@@ -138,6 +108,12 @@ print(receipt.items[0].quantity) # 3
 `ImageBlock.from_pil_image()` converts any PIL image to the base64 PNG the backends expect.
 `format=Receipt` switches the model into constrained decoding. `model_validate_json` gives you
 a fully typed Python object with IDE autocomplete on every field.
+
+`model_options={ModelOption.CONTEXT_WINDOW: 4096}` is worth setting explicitly. Ollama
+otherwise defaults to this model's full 131072-token context window, which pulls close to
+9 GB of memory for a job that only needs a few thousand tokens — one image, a short
+instruction, a small JSON object back. Capping it at 4096 drops that to about 2.5 GB with
+no change in output quality.
 
 ## When the type isn't enough
 
@@ -173,7 +149,8 @@ you need an external check.
 
 ## When to reach for IVR
 
-If you have a concrete verifiable property — something independent of the image — wire it as a
+IVR — Instruct, Validate, Repair — is Mellea's loop for catching and fixing semantic
+mistakes that constrained decoding alone can't. If you have a concrete verifiable property — something independent of the image — wire it as a
 `validation_fn`. Mellea runs it on each attempt and feeds the failure reason back into the
 repair prompt if it fails.
 
@@ -220,14 +197,18 @@ in post-processing anyway — it belongs in the prompt loop, not after it.
 
 ## Swapping backends
 
-`ImageBlock` is backend-agnostic. The only thing that changes is the session setup:
+`ImageBlock` is backend-agnostic. This post uses Ollama throughout; the only thing that
+changes for another backend is the session setup:
 
 ```python
 # Ollama (this post)
 from mellea import start_session
-m = start_session(model_id="granite-vision-4.1")
+m = start_session(
+    model_id="hf.co/ibm-granite/granite-vision-4.1-4b-GGUF:Q4_K_M",
+    model_options={ModelOption.CONTEXT_WINDOW: 4096},
+)
 
-# Any OpenAI-compatible endpoint (vLLM, mlx-vlm, cloud)
+# Any OpenAI-compatible endpoint (vLLM, cloud)
 from mellea import MelleaSession
 from mellea.backends.openai import OpenAIBackend
 m = MelleaSession(OpenAIBackend("ibm-granite/granite-vision-4.1-4b",
